@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visitor Sign-in</title>
+    <script>
+        function handleSubmit(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const feedback = document.getElementById('feedback');
+            if (username) {
+                feedback.innerHTML = 'Thank you for signing in, ' + username + '!';
+                feedback.style.color = 'green';
+            } else {
+                feedback.innerHTML = 'Please enter your username.';
+                feedback.style.color = 'red';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Visitor Sign-in</h1>
+    <form onsubmit="handleSubmit(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <input type="submit" value="Sign In">
+    </form>
+    <div id="feedback"></div>
+</body>
+</html>
