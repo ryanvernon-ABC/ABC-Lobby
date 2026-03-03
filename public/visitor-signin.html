@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visitor Sign In</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <button class="button-back" onclick="window.location.href='/'">← Back to Main Screen</button>
+      <h2>Visitor Sign In</h2>
+      <div class="panel">
+        <form id="signinForm">
+          <label>
+            Name
+            <input name="name" type="text" autocomplete="name" required />
+          </label>
+
+          <label>
+            Reason for Visit
+            <textarea name="reasonForVisit" required></textarea>
+          </label>
+
+          <button class="button button-secondary" type="submit">Submit</button>
+          <p class="status" id="status"></p>
+        </form>
+      </div>
+    </main>
+
+    <script src="/inactivity.js"></script>
+    <script>
+      const form = document.getElementById('signinForm');
+      const status = document.getElementById('status');
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.classList.remove('error');
+        status.textContent = 'Submitting...';
+
+        const formData = new FormData(form);
+        const payload = {
+          name: formData.get('name'),
+          reasonForVisit: formData.get('reasonForVisit')
+        };
+
+        try {
+          const response = await fetch('/api/signin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+
+          const body = await response.json();
+
+          if (!response.ok) {
+            throw new Error(body.error || 'Unable to sign in.');
+          }
+
+          status.textContent = `Signed in at ${body.checkInTime}. Returning to home screen...`;
+          form.reset();
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 4000);
+        } catch (error) {
+          status.classList.add('error');
+          status.textContent = error.message;
+        }
+      });
+    </script>
+  </body>
+</html>
